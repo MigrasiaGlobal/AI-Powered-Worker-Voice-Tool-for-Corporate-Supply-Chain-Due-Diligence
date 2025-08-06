@@ -28,12 +28,10 @@ PoBot is a Django-based chatbot application designed to assist workers in identi
 
 ## Usage
 
-1. Access the chatbot at `http://localhost:8000/`
+1. Access the chatbot at `https://pobotsupplychain.azurewebsites.net/`
 2. Start a conversation with PoBot
 3. Provide information about your incident
-4. View the dashboard at `http://localhost:8000/dashboard/`
-5. Access the admin interface at `http://localhost:8000/admin/`
-
+4. View the dashboard at `https://pobotsupplychain.azurewebsites.net/dashboard/`
 ## Requirements
 
 - Python 3.8+
