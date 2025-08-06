@@ -1,0 +1,1174 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    .policy-violation-card {
+        border-left: 4px solid #dc3545;
+        margin-bottom: 2rem;
+    }
+    .incident-item {
+        background-color: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 0.375rem;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+    .violation-item {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 0.375rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    .policy-reference {
+        background-color: #e2e3e5;
+        border-radius: 0.375rem;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+    }
+    .reference-link {
+        color: #0066cc;
+        text-decoration: none;
+    }
+    .reference-link:hover {
+        text-decoration: underline;
+    }
+    .complaint-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .section-header {
+        border-bottom: 2px solid #dee2e6;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .stats-card {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+    }
+    .expand-btn {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .expand-btn:hover {
+        background-color: #f8f9fa;
+    }
+    .collapsible-content {
+        display: none;
+    }
+    .collapsible-content.show {
+        display: block;
+    }
+    
+    /* New Enhanced Styles */
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .stats-overview {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .stat-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.8;
+    }
+    
+    .stat-sessions {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+    }
+    
+    .stat-violations {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        color: white;
+    }
+    
+    .stat-incidents {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #333;
+    }
+    
+    .stat-companies {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        color: #333;
+    }
+    
+    .search-container {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+    }
+    
+    .search-input {
+        border: 2px solid #e9ecef;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        outline: none;
+    }
+    
+    .search-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1.5rem;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .search-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .clear-btn {
+        background: #6c757d;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1.5rem;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .clear-btn:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+    
+    .enhanced-card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .enhanced-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+    
+    .table-responsive {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        max-height: 600px;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+    
+    .table-responsive::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    
+    .table thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa;
+        z-index: 10;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .table th {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        padding: 1rem;
+    }
+    
+    .table td {
+        border: none;
+        padding: 1rem;
+        vertical-align: middle;
+    }
+    
+    .table tbody tr {
+        transition: all 0.3s ease;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: scale(1.01);
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    
+    .no-results i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Administrative Access Disclaimer Notice -->
+<div class="container mb-3">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="border-radius: 15px; border: none; background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-shield-alt me-3" style="font-size: 1.5rem; color: #f57c00;"></i>
+            <div>
+                <h6 class="alert-heading mb-1" style="color: #ef6c00; font-weight: 600;">Administrative Access Notice</h6>
+                <p class="mb-0" style="color: #f57c00;">
+                    This dashboard is currently accessible for <strong>demonstration purposes</strong>. In real deployment, 
+                    this will be restricted to <strong>administrative login only</strong> for NGOs and brand companies.
+                </p>
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+<!-- Administrative Access Disclaimer Notice -->
+<div class="container mb-3">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="border-radius: 15px; border: none; background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <div class="d-flex align-items-start">
+            <i class="fas fa-shield-alt me-3" style="font-size: 1.5rem; color: #f57c00; margin-top: 4px;"></i>
+            <div>
+                <h6 class="alert-heading mb-1" style="color: #ef6c00; font-weight: 600;">Disclaimer</h6>
+                <p class="mb-0" style="color: #f57c00;">
+                    This project contains <strong>fictional case studies</strong> for <strong>demonstration purposes</strong>. 
+                    Though the names of <strong>brands</strong> and their <strong>supplier factories</strong> along with their respective <strong>corporate policies</strong> are real, 
+                    any resemblance to <strong>actual worker concerns</strong> or <strong>events</strong> is <strong>purely coincidental and unintentional</strong>.
+                </p>
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
+<!-- Enhanced Dashboard Header -->
+<div class="dashboard-header">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="mb-2"><i class="fas fa-tachometer-alt me-3"></i>Supply Chain Dashboard</h1>
+            <p class="mb-0 opacity-75">Monitor incidents, violations, and factory compliance in real-time</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="d-flex justify-content-end align-items-center">
+                <i class="fas fa-clock me-2"></i>
+                <span id="current-time"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Overview -->
+<div class="stats-overview">
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="stat-item stat-sessions">
+                <div class="stat-number">{{ sessions|length }}</div>
+                <div class="stat-label">Total Sessions</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item stat-violations">
+                <div class="stat-number">{{ total_violations }}</div>
+                <div class="stat-label">Policy Violations</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item stat-incidents">
+                <div class="stat-number">{{ total_incidents }}</div>
+                <div class="stat-label">Total Incidents</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item stat-companies">
+                <div class="stat-number">{{ unique_factories }}</div>
+                <div class="stat-label">Unique Factories</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Functionality -->
+<div class="search-container">
+    <div class="row align-items-center">
+        <div class="col-md-4">
+            <h5 class="mb-3 mb-md-0"><i class="fas fa-search me-2"></i>Search & Filter</h5>
+        </div>
+        <div class="col-md-8">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" id="factorySearch" class="form-control search-input" placeholder="Search by Factory Name...">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" id="brandSearch" class="form-control search-input" placeholder="Search by Brand/Company...">
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex gap-2">
+                        <button class="btn search-btn flex-fill" onclick="performSearch()">
+                            <i class="fas fa-search me-1"></i>Search
+                        </button>
+                        <button class="btn clear-btn" onclick="clearSearch()">
+                            <i class="fas fa-times me-1"></i>Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card enhanced-card mb-4">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>Recent Sessions</h5>
+                    <span class="badge bg-light text-primary" id="session-count">{{ sessions|length }} Total</span>
+                </div>
+            </div>
+            <div class="card-body" id="sessions-container">
+                {% if sessions %}
+                <div class="table-responsive">
+                    <table class="table table-hover" id="sessionsTable">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                                <th><i class="fas fa-industry me-1"></i>Factory</th>
+                                <th><i class="fas fa-map-marker-alt me-1"></i>Location</th>
+                                <th><i class="fas fa-language me-1"></i>Language</th>
+                                <th><i class="fas fa-tag me-1"></i>Case Type</th>
+                                <th><i class="fas fa-calendar me-1"></i>Created</th>
+                                <th><i class="fas fa-building me-1"></i>Buyer Companies</th>
+                                <th><i class="fas fa-cog me-1"></i>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in sessions %}
+                            <tr class="session-row" 
+                                data-factory="{{ session.factory_name|default:'Unknown'|lower }}" 
+                                data-companies="{% for company in session.buyer_companies.all %}{{ company.name|lower }} {% endfor %}">
+                                <td>
+                                    <span class="badge bg-secondary">#{{ session.id|slice:":8" }}</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-industry text-primary me-2"></i>
+                                        <strong>{{ session.factory_name|default:"Unknown Factory" }}</strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-map-marker-alt text-success me-2"></i>
+                                        {{ session.location|default:"Unknown" }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">{{ session.language|default:"Unknown" }}</span>
+                                </td>
+                                <td>
+                                    {% if session.case_type %}
+                                    <span class="badge bg-warning text-dark">{{ session.case_type }}</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Not classified</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-clock text-muted me-2"></i>
+                                        <small>{{ session.created_at|date:"M d, Y H:i" }}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {% for company in session.buyer_companies.all %}
+                                        <span class="badge bg-primary">{{ company.name }}</span>
+                                        {% empty %}
+                                        <span class="text-muted"><i class="fas fa-minus"></i> None identified</span>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <a href="{% url 'session_detail' session.id %}" class="btn btn-sm btn-outline-primary" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        {% if session.violations.exists %}
+                                        <a href="{% url 'download_session_pdf' session.id %}" class="btn btn-sm btn-outline-success" title="Download PDF Report">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </a>
+                                        <span class="btn btn-sm btn-outline-danger" title="{{ session.violations.count }} Violation(s)">
+                                            <i class="fas fa-exclamation-triangle"></i> {{ session.violations.count }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- No Results Message -->
+                <div id="no-results" class="no-results" style="display: none;">
+                    <i class="fas fa-search"></i>
+                    <h5>No Results Found</h5>
+                    <p>No sessions match your search criteria. Try adjusting your search terms.</p>
+                </div>
+                
+                {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No chat sessions found. Start a conversation with PoBot to create a new session.
+                </div>
+                <div class="text-center">
+                    <a href="{% url 'index' %}" class="btn btn-primary btn-lg" onclick="sessionStorage.removeItem('chatSessionActive')">
+                        <i class="fas fa-plus me-2"></i>Start New Chat
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if sessions %}
+<!-- Statistical Analysis Section -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card enhanced-card">
+            <div class="card-header bg-info text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Statistical Analysis & Insights</h5>
+                    <span class="badge bg-light text-info">
+                        <i class="fas fa-database me-1"></i>{{ sessions|length }} Total Cases
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Charts Row -->
+                <div class="row g-4 mb-4">
+                    <!-- Cases per Company Chart -->
+                    <div class="col-md-4">
+                        <div class="chart-container bg-light rounded p-3">
+                            <h6 class="text-center mb-3"><i class="fas fa-building me-2"></i>Cases per Company</h6>
+                            <canvas id="casesPerCompanyChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Cases per Industry Chart -->
+                    <div class="col-md-4">
+                        <div class="chart-container bg-light rounded p-3">
+                            <h6 class="text-center mb-3"><i class="fas fa-industry me-2"></i>Cases per Industry</h6>
+                            <canvas id="casesPerIndustryChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Cases Initiated Over Time -->
+                    <div class="col-md-4">
+                        <div class="chart-container bg-light rounded p-3">
+                            <h6 class="text-center mb-3"><i class="fas fa-calendar-alt me-2"></i>Cases Initiated Over Time</h6>
+                            <canvas id="casesInitiatedChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-4 mb-4">
+                    <!-- Violation Types Distribution -->
+                    <div class="col-md-4">
+                        <div class="chart-container bg-light rounded p-3">
+                            <h6 class="text-center mb-3"><i class="fas fa-exclamation-triangle me-2"></i>Types of Violations</h6>
+                            <canvas id="violationTypesChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Grievant Demographics -->
+                    <div class="col-md-4">
+                        <div class="chart-container bg-light rounded p-3">
+                            <h6 class="text-center mb-3"><i class="fas fa-users me-2"></i>Grievant Demographics (by Nationality & Gender)</h6>
+                            <canvas id="grievantDemographicsChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Individual Cases Linked to Companies -->
+                    <div class="col-md-4">
+                        <div class="chart-container bg-light rounded p-3">
+                            <h6 class="text-center mb-3"><i class="fas fa-link me-2"></i>Individual Cases Linked to Companies</h6>
+                            <canvas id="casesLinkedChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Summary Statistics Table -->
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="color: black;"><i class="fas fa-chart-pie me-1"></i>Metric</th>
+                                        <th style="color: black;"><i class="fas fa-hashtag me-1"></i>Count</th>
+                                        <th style="color: black;"><i class="fas fa-percentage me-1"></i>Percentage</th>
+                                        <th style="color: black;"><i class="fas fa-info-circle me-1"></i>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="statisticsTableBody">
+                                    <!-- Data will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Data preparation from Django template
+const sessionsData = [
+    {% for session in sessions %}
+    {
+        id: '{{ session.id }}',
+        factory_name: '{{ session.factory_name|default:"Unknown Factory"|escapejs }}',
+        location: '{{ session.location|default:"Unknown"|escapejs }}',
+        nationality: '{{ session.nationality|default:"Unknown"|escapejs }}',
+        gender: '{{ session.gender|default:"Unknown"|escapejs }}',
+        case_type: '{{ session.case_type|default:"Unclassified"|escapejs }}',
+        industrial_sector: '{{ session.industrial_sector|default:"Other"|escapejs }}',
+        created_at: '{{ session.created_at|date:"Y-m-d" }}',
+        violations_count: {{ session.violations.count }},
+        buyer_companies: [
+            {% for company in session.buyer_companies.all %}
+            '{{ company.name|escapejs }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        violation_types: [
+            {% for violation in session.violations.all %}
+                {% for policy_violation in violation.get_violations_list %}
+                '{{ policy_violation.policy_category|default:"General Violation"|escapejs }}'{% if not forloop.last %},{% endif %}
+                {% endfor %}
+                {% if not forloop.last and violation.get_violations_list %},{% endif %}
+            {% endfor %}
+        ]
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+
+// Statistical Analysis Functions
+function createCasesPerCompanyChart() {
+    const companyData = {};
+    
+    sessionsData.forEach(session => {
+        session.buyer_companies.forEach(company => {
+            if (company) {
+                companyData[company] = (companyData[company] || 0) + 1;
+            }
+        });
+    });
+    
+    const sortedCompanies = Object.entries(companyData)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 10); // Top 10 companies
+    
+    // Generate unique colors for each company
+    const colors = [
+        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+        '#FF9F40', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
+        '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE'
+    ];
+    
+    const backgroundColors = sortedCompanies.map((_, index) => colors[index % colors.length]);
+    const borderColors = backgroundColors.map(color => color.replace('0.8)', '1)'));
+    
+    const ctx = document.getElementById('casesPerCompanyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: sortedCompanies.map(([company]) => company),
+            datasets: [{
+                label: 'Number of Cases',
+                data: sortedCompanies.map(([, count]) => count),
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createCasesPerIndustryChart() {
+    const industryData = {};
+    
+    sessionsData.forEach(session => {
+        // Use the industrial_sector field directly
+        const industry = session.industrial_sector || 'Other';
+        industryData[industry] = (industryData[industry] || 0) + 1;
+    });
+    
+    const ctx = document.getElementById('casesPerIndustryChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(industryData),
+            datasets: [{
+                label: 'Number of Cases',
+                data: Object.values(industryData),
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                    '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                ],
+                borderColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                    '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    ticks: {
+                        maxRotation: 45
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createCasesInitiatedChart() {
+    const monthlyData = {};
+    
+    sessionsData.forEach(session => {
+        const date = new Date(session.created_at);
+        const monthYear = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+        monthlyData[monthYear] = (monthlyData[monthYear] || 0) + 1;
+    });
+    
+    const sortedMonths = Object.entries(monthlyData)
+        .sort(([a], [b]) => new Date(a) - new Date(b));
+    
+    const ctx = document.getElementById('casesInitiatedChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: sortedMonths.map(([month]) => month),
+            datasets: [{
+                label: 'Cases Initiated',
+                data: sortedMonths.map(([, count]) => count),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createViolationTypesChart() {
+    const violationData = {};
+    
+    sessionsData.forEach(session => {
+        session.violation_types.forEach(type => {
+            if (type && type !== 'General Violation') {
+                violationData[type] = (violationData[type] || 0) + 1;
+            }
+        });
+    });
+    
+    const ctx = document.getElementById('violationTypesChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(violationData),
+            datasets: [{
+                label: 'Number of Violations',
+                data: Object.values(violationData),
+                backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    ticks: {
+                        maxRotation: 45
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createGrievantDemographicsChart() {
+    const demographicsData = {};
+    
+    sessionsData.forEach(session => {
+        // Create a combined key for nationality and gender
+        const nationality = session.nationality || 'Unknown';
+        const gender = session.gender || 'Unknown';
+        const key = `${nationality} - ${gender}`;
+        
+        demographicsData[key] = (demographicsData[key] || 0) + 1;
+    });
+    
+    // Sort by count and take top entries to avoid overcrowding
+    const sortedData = Object.entries(demographicsData)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 10); // Show top 10 combinations
+    
+    const ctx = document.getElementById('grievantDemographicsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: sortedData.map(([key]) => key),
+            datasets: [{
+                data: sortedData.map(([, count]) => count),
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                    '#9966FF', '#FF9F40', '#FF6B6B', '#4ECDC4',
+                    '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 10,
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed / total) * 100).toFixed(1);
+                            return `${context.label}: ${context.parsed} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createCasesLinkedChart() {
+    const companyLinkData = {};
+    
+    sessionsData.forEach(session => {
+        session.buyer_companies.forEach(company => {
+            if (company) {
+                if (!companyLinkData[company]) {
+                    companyLinkData[company] = { cases: 0, violations: 0 };
+                }
+                companyLinkData[company].cases += 1;
+                companyLinkData[company].violations += session.violations_count;
+            }
+        });
+    });
+    
+    const companies = Object.keys(companyLinkData).slice(0, 8); // Top 8 companies
+    
+    const ctx = document.getElementById('casesLinkedChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: companies,
+            datasets: [{
+                label: 'Cases',
+                data: companies.map(company => companyLinkData[company].cases),
+                backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Violations',
+                data: companies.map(company => companyLinkData[company].violations),
+                backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+function populateStatisticsTable() {
+    const tbody = document.getElementById('statisticsTableBody');
+    
+    // Calculate statistics
+    const totalSessions = sessionsData.length;
+    const totalViolations = sessionsData.reduce((sum, session) => sum + session.violations_count, 0);
+    const uniqueCompanies = new Set();
+    const uniqueLocations = new Set();
+    const caseTypes = {};
+    
+    sessionsData.forEach(session => {
+        session.buyer_companies.forEach(company => {
+            if (company) uniqueCompanies.add(company);
+        });
+        uniqueLocations.add(session.location);
+        
+        const caseType = session.case_type;
+        caseTypes[caseType] = (caseTypes[caseType] || 0) + 1;
+    });
+    
+    const statistics = [
+        {
+            metric: 'Total Cases',
+            count: totalSessions,
+            percentage: '100%',
+            details: 'All reported cases in the system'
+        },
+        {
+            metric: 'Total Violations',
+            count: totalViolations,
+            percentage: `${((totalViolations / totalSessions) * 100).toFixed(1)}%`,
+            details: 'Average violations per case'
+        },
+        {
+            metric: 'Unique Companies',
+            count: uniqueCompanies.size,
+            percentage: `${((uniqueCompanies.size / totalSessions) * 100).toFixed(1)}%`,
+            details: 'Companies involved in cases'
+        },
+        {
+            metric: 'Unique Locations',
+            count: uniqueLocations.size,
+            percentage: `${((uniqueLocations.size / totalSessions) * 100).toFixed(1)}%`,
+            details: 'Geographic distribution'
+        },
+        {
+            metric: 'Most Common Case Type',
+            count: Math.max(...Object.values(caseTypes)),
+            percentage: `${((Math.max(...Object.values(caseTypes)) / totalSessions) * 100).toFixed(1)}%`,
+            details: Object.keys(caseTypes).find(key => caseTypes[key] === Math.max(...Object.values(caseTypes)))
+        }
+    ];
+    
+    tbody.innerHTML = statistics.map(stat => `
+        <tr>
+            <td><strong>${stat.metric}</strong></td>
+            <td><span class="badge bg-primary">${stat.count}</span></td>
+            <td><span class="badge bg-success">${stat.percentage}</span></td>
+            <td><small class="text-muted">${stat.details}</small></td>
+        </tr>
+    `).join('');
+}
+
+// Real-time clock functionality
+function updateClock() {
+    const now = new Date();
+    const timeString = now.toLocaleString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    document.getElementById('current-time').textContent = timeString;
+}
+
+// Search functionality
+function performSearch() {
+    const factorySearch = document.getElementById('factorySearch').value.toLowerCase().trim();
+    const brandSearch = document.getElementById('brandSearch').value.toLowerCase().trim();
+    const rows = document.querySelectorAll('.session-row');
+    const noResults = document.getElementById('no-results');
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        const factoryName = (row.getAttribute('data-factory') || '').toLowerCase();
+        const companies = (row.getAttribute('data-companies') || '').toLowerCase();
+        
+        // Check if factory search matches
+        const factoryMatch = !factorySearch || 
+            factoryName.includes(factorySearch) || 
+            factoryName.indexOf(factorySearch) !== -1;
+        
+        // Check if brand/company search matches
+        const brandMatch = !brandSearch || 
+            companies.includes(brandSearch) || 
+            companies.indexOf(brandSearch) !== -1;
+        
+        if (factoryMatch && brandMatch) {
+            row.style.display = 'table-row';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    // Update session count
+    const sessionCountElement = document.getElementById('session-count');
+    if (sessionCountElement) {
+        sessionCountElement.textContent = visibleCount + ' Found';
+    }
+    
+    // Show/hide no results message
+    if (visibleCount === 0 && (factorySearch || brandSearch)) {
+        if (noResults) noResults.style.display = 'block';
+        const tableContainer = document.querySelector('.table-responsive');
+        if (tableContainer) tableContainer.style.display = 'none';
+    } else {
+        if (noResults) noResults.style.display = 'none';
+        const tableContainer = document.querySelector('.table-responsive');
+        if (tableContainer) tableContainer.style.display = 'block';
+    }
+}
+
+// Clear search functionality
+function clearSearch() {
+    const factorySearchElement = document.getElementById('factorySearch');
+    const brandSearchElement = document.getElementById('brandSearch');
+    
+    if (factorySearchElement) factorySearchElement.value = '';
+    if (brandSearchElement) brandSearchElement.value = '';
+    
+    const rows = document.querySelectorAll('.session-row');
+    rows.forEach(row => {
+        row.style.display = 'table-row';
+    });
+    
+    const sessionCountElement = document.getElementById('session-count');
+    if (sessionCountElement) {
+        sessionCountElement.textContent = '{{ sessions|length }} Total';
+    }
+    
+    const noResults = document.getElementById('no-results');
+    if (noResults) noResults.style.display = 'none';
+    
+    const tableContainer = document.querySelector('.table-responsive');
+    if (tableContainer) tableContainer.style.display = 'block';
+}
+
+// Real-time search as user types
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all statistical visualizations
+    createCasesPerCompanyChart();
+    createCasesPerIndustryChart();
+    createCasesInitiatedChart();
+    createViolationTypesChart();
+    createGrievantDemographicsChart();
+    createCasesLinkedChart();
+    populateStatisticsTable();
+    
+    // Start the clock
+    updateClock();
+    setInterval(updateClock, 1000);
+    
+    // Add event listeners for real-time search
+    const factoryInput = document.getElementById('factorySearch');
+    const brandInput = document.getElementById('brandSearch');
+    
+    if (factoryInput) {
+        factoryInput.addEventListener('input', performSearch);
+        factoryInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+    
+    if (brandInput) {
+        brandInput.addEventListener('input', performSearch);
+        brandInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+    
+    // Add smooth animations to stat items
+    const statItems = document.querySelectorAll('.stat-item');
+    statItems.forEach((item, index) => {
+        item.style.animationDelay = (index * 0.1) + 's';
+        item.classList.add('animate-in');
+    });
+});
+
+// Add CSS animation class
+const style = document.createElement('style');
+style.textContent = `
+    .animate-in {
+        animation: slideInUp 0.6s ease-out forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    @keyframes slideInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .search-input:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        border-color: #007bff;
+    }
+    
+    .session-row {
+        transition: all 0.3s ease;
+    }
+    
+    .session-row:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+        transform: translateX(2px);
+    }
+`;
+document.head.appendChild(style);
+
+// Add Font Awesome if not already included
+if (!document.querySelector('link[href*="font-awesome"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+    document.head.appendChild(link);
+}
+</script>
+{% endblock %}

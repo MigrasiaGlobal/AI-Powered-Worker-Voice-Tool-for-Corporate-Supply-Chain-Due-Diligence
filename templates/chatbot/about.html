@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+    }
+    
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .hero-section p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 3rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 2px;
+    }
+    
+    .purpose-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .purpose-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .purpose-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: white;
+    }
+    
+    .interface-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        transition: transform 0.3s ease;
+    }
+    
+    .interface-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .interface-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    /* Features Slider Styles */
+    .features-slider {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .slider-container {
+        display: flex;
+        transition: transform 0.5s ease;
+    }
+    
+    .slide {
+        min-width: 100%;
+        background: white;
+        padding: 3rem;
+        text-align: center;
+    }
+    
+    .slide-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        font-size: 2.5rem;
+        color: white;
+    }
+    
+    .slide h3 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+    
+    .slide p {
+        font-size: 1.1rem;
+        color: #6c757d;
+        line-height: 1.6;
+    }
+    
+    .slider-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: #667eea;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+    
+    .slider-nav:hover {
+        background: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .slider-nav.prev {
+        left: 20px;
+    }
+    
+    .slider-nav.next {
+        right: 20px;
+    }
+    
+    .slider-dots {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 2rem;
+    }
+    
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #dee2e6;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    
+    .dot.active {
+        background: #667eea;
+    }
+    
+    .bg-light-custom {
+        background-color: #f8f9fa;
+        padding: 4rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container">
+        <h1>About PoBot</h1>
+        <p class="lead">Empowering migrant workers and ensuring transparent supply chain accountability through AI-powered assistance</p>
+    </div>
+</section>
+
+<!-- Purpose Section -->
+<section class="container mb-5">
+    <h2 class="section-title">Our Purpose</h2>
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="purpose-card">
+                <div class="purpose-icon">
+                    🤖
+                </div>
+                <h3 class="text-center mb-3">AI-Powered Legal Assistant</h3>
+                <p class="text-center text-muted">
+                    PoBot is an intelligent chatbot designed to provide legal assistance and support to migrant workers 
+                    in supply chains. Our mission is to bridge the gap between vulnerable workers and the legal resources 
+                    they need, while ensuring transparency and accountability in global supply chains.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Slider Section -->
+<section class="bg-light-custom">
+    <div class="container">
+        <h2 class="section-title">Key Features</h2>
+        <div class="features-slider">
+            <div class="slider-container" id="sliderContainer">
+                <!-- Slide 1: Transparent Supply Chain Tracking -->
+                <div class="slide">
+                    <div class="slide-icon">
+                        🔍
+                    </div>
+                    <h3>Transparent Supply Chain Tracking</h3>
+                    <p>
+                        Our advanced tracking system provides real-time visibility into supply chain operations, 
+                        enabling brands to monitor their suppliers and ensure compliance with labor standards. 
+                        Track incidents, violations, and corrective actions across your entire supply network.
+                    </p>
+                </div>
+                
+                <!-- Slide 2: Exploitation Incident Reporting -->
+                <div class="slide">
+                    <div class="slide-icon">
+                        📋
+                    </div>
+                    <h3>Exploitation Incident Reporting</h3>
+                    <p>
+                        Comprehensive reporting system that documents and tracks exploitation incidents, 
+                        policy violations, and worker complaints. Generate detailed reports for stakeholders 
+                        and regulatory bodies to ensure accountability and drive positive change.
+                    </p>
+                </div>
+                
+                <!-- Slide 3: Worker Voice Amplification -->
+                <div class="slide">
+                    <div class="slide-icon">
+                        📢
+                    </div>
+                    <h3>Worker Voice Amplification</h3>
+                    <p>
+                        Empowering migrant workers by providing them with a safe, anonymous platform to report 
+                        issues, seek help, and access legal resources. Our AI assistant guides workers through 
+                        complex legal processes and connects them with appropriate support services.
+                    </p>
+                </div>
+                
+                <!-- Slide 4: Multi-language Support -->
+                <div class="slide">
+                    <div class="slide-icon">
+                        🌐
+                    </div>
+                    <h3>Multi-language Support</h3>
+                    <p>
+                        Breaking down language barriers with comprehensive multi-language support, ensuring 
+                        that workers from diverse backgrounds can access help in their native language. 
+                        Our AI understands and responds in multiple languages for better accessibility.
+                    </p>
+                </div>
+                
+                <!-- Slide 5: Legal Guidance -->
+                <div class="slide">
+                    <div class="slide-icon">
+                        ⚖️
+                    </div>
+                    <h3>Legal Guidance & Resources</h3>
+                    <p>
+                        Providing comprehensive legal guidance tailored to migrant workers' specific situations. 
+                        Access to legal resources, rights information, and step-by-step guidance through 
+                        complaint processes and legal procedures.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <button class="slider-nav prev" onclick="previousSlide()">
+                ‹
+            </button>
+            <button class="slider-nav next" onclick="nextSlide()">
+                ›
+            </button>
+        </div>
+        
+        <!-- Slider Dots -->
+        <div class="slider-dots" id="sliderDots">
+            <span class="dot active" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+            <span class="dot" onclick="currentSlide(4)"></span>
+            <span class="dot" onclick="currentSlide(5)"></span>
+        </div>
+    </div>
+</section>
+
+<!-- Dual Interface Section -->
+<section class="container my-5">
+    <h2 class="section-title">Dual Interface System</h2>
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="interface-card">
+                <div class="interface-icon">
+                    👥
+                </div>
+                <h3 class="mb-3">For Migrant Workers</h3>
+                <p class="text-muted mb-3">
+                    A user-friendly interface designed specifically for migrant workers to:
+                </p>
+                <ul class="list-unstyled">
+                    <li class="mb-2">🔹 Report workplace violations and exploitation</li>
+                    <li class="mb-2">🔹 Access legal guidance and resources</li>
+                    <li class="mb-2">🔹 Get help in their native language</li>
+                    <li class="mb-2">🔹 Connect with support services</li>
+                    <li class="mb-2">🔹 Track the status of their complaints</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 mb-4">
+            <div class="interface-card">
+                <div class="interface-icon">
+                    🏢
+                </div>
+                <h3 class="mb-3">For Brand Companies</h3>
+                <p class="text-muted mb-3">
+                    A comprehensive dashboard for brands and companies to:
+                </p>
+                <ul class="list-unstyled">
+                    <li class="mb-2">🔹 Monitor supplier compliance and performance</li>
+                    <li class="mb-2">🔹 Track incidents and violations in real-time</li>
+                    <li class="mb-2">🔹 Generate compliance and audit reports</li>
+                    <li class="mb-2">🔹 Manage corrective action plans</li>
+                    <li class="mb-2">🔹 Ensure supply chain transparency</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="hero-section text-center">
+    <div class="container">
+        <h2 class="mb-4">Ready to Make a Difference?</h2>
+        <p class="lead mb-4">
+            Join us in creating a more transparent and ethical supply chain ecosystem
+        </p>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <a href="{% url 'index' %}" class="btn btn-light btn-lg me-3 mb-2">
+                    Start Chatting
+                </a>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-light btn-lg mb-2">
+                    View Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentSlideIndex = 0;
+const totalSlides = 5;
+
+function showSlide(index) {
+    const container = document.getElementById('sliderContainer');
+    const dots = document.querySelectorAll('.dot');
+    
+    // Update slider position
+    container.style.transform = `translateX(-${index * 100}%)`;
+    
+    // Update dots
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+    
+    currentSlideIndex = index;
+}
+
+function nextSlide() {
+    const nextIndex = (currentSlideIndex + 1) % totalSlides;
+    showSlide(nextIndex);
+}
+
+function previousSlide() {
+    const prevIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+    showSlide(prevIndex);
+}
+
+function currentSlide(index) {
+    showSlide(index - 1);
+}
+
+// Auto-advance slides every 5 seconds
+setInterval(nextSlide, 5000);
+
+// Initialize
+showSlide(0);
+</script>
+{% endblock %}

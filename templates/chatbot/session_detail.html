@@ -1,0 +1,1080 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Session Details{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .session-wrapper {
+        padding: 2rem 0;
+        min-height: 100vh;
+    }
+    
+    .session-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 20px 20px 0 0;
+        margin-bottom: 0;
+    }
+    
+    .session-header h2 {
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .session-header .header-icon {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.75rem;
+        border-radius: 12px;
+        font-size: 1.5rem;
+    }
+    
+    .back-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+    
+    .delete-btn {
+        background: rgba(220, 53, 69, 0.8);
+        border: 1px solid rgba(220, 53, 69, 0.9);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .delete-btn:hover {
+        background: rgba(220, 53, 69, 1);
+        border-color: rgba(220, 53, 69, 1);
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+    
+    .session-info {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .info-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-icon {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.75rem;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        min-width: 45px;
+        text-align: center;
+    }
+    
+    .info-content h6 {
+        margin: 0 0 0.25rem 0;
+        color: #6c757d;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .info-content p {
+        margin: 0;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .policy-violation-card {
+        border-left: 4px solid #dc3545;
+    }
+    
+    .policy-violation {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.1);
+        border-left: 5px solid #dc3545;
+        transition: all 0.3s ease;
+    }
+    
+    .policy-violation:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(220, 53, 69, 0.15);
+    }
+    
+    .violation-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .violation-icon {
+        background: #dc3545;
+        color: white;
+        padding: 0.75rem;
+        border-radius: 10px;
+        font-size: 1.1rem;
+    }
+    
+    .violation-title {
+        flex: 1;
+    }
+    
+    .violation-title h5 {
+        margin: 0;
+        color: #dc3545;
+        font-weight: 600;
+    }
+    
+    .violation-badge {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .incident-item {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid #ffeaa7;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        transition: all 0.3s ease;
+    }
+    
+    .incident-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
+    }
+    
+    .violation-item {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 0.375rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .policy-reference {
+        background: linear-gradient(135deg, #e7f3ff 0%, #b3d9ff 100%);
+        border: 1px solid #b3d9ff;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+    
+    .policy-reference.show {
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .complaint-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-header {
+        border-bottom: 2px solid #dee2e6;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .expand-btn {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .expand-btn:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .collapsible-content {
+        display: none;
+    }
+    
+    .collapsible-content.show {
+        display: block;
+    }
+    
+    .toggle-btn {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .toggle-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+        color: white;
+    }
+    
+    .message {
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        border-radius: 15px;
+        max-width: 85%;
+        position: relative;
+        word-wrap: break-word;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border-left: 5px solid transparent;
+    }
+    
+    .message:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .user-message {
+        background: white;
+        color: #333;
+        margin-left: auto;
+        text-align: right;
+        border-left: 5px solid #667eea;
+        border-bottom-right-radius: 6px;
+    }
+    
+    .user-message:hover {
+        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
+    }
+    
+    .user-message::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: -8px;
+        width: 0;
+        height: 0;
+        border: 8px solid transparent;
+        border-left-color: white;
+        border-bottom: 0;
+        border-right: 0;
+    }
+    
+    .bot-message {
+        background: white;
+        color: #333;
+        border-left: 5px solid #17a2b8;
+        margin-right: auto;
+        border-bottom-left-radius: 6px;
+    }
+    
+    .bot-message:hover {
+        box-shadow: 0 12px 35px rgba(23, 162, 184, 0.15);
+    }
+    
+    .bot-message::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: -8px;
+        width: 0;
+        height: 0;
+        border: 8px solid transparent;
+        border-right-color: white;
+        border-bottom: 0;
+        border-left: 0;
+    }
+    
+    .content-columns {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1rem;
+    }
+    
+    .violations-column {
+        flex: 1;
+        min-width: 0;
+        margin-right: 20px;
+    }
+    
+    .conversation-column {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .violations-wrapper,
+    .conversation-wrapper {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .violations-header,
+    .conversation-header {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e9ecef;
+    }
+    
+    .violations-header h3,
+    .conversation-header h3 {
+        color: #2c3e50;
+        font-weight: 600;
+        margin: 0;
+        font-size: 1.4rem;
+    }
+    
+    .violations-header h3 i {
+        color: #e74c3c;
+        margin-right: 10px;
+    }
+    
+    .conversation-header h3 i {
+        color: #3498db;
+        margin-right: 10px;
+    }
+    
+    .chat-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border: 1px solid #e9ecef;
+        max-height: 600px;
+    }
+    
+    .chat-container::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .chat-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+    
+    .chat-container::-webkit-scrollbar-thumb {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border-radius: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .chat-container::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(45deg, #5a6fd8, #6a4190);
+    }
+    
+    .violations-container {
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 10px;
+        max-height: 600px;
+    }
+    
+    .violations-container::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .violations-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+    
+    .violations-container::-webkit-scrollbar-thumb {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border-radius: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .violations-container::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(45deg, #5a6fd8, #6a4190);
+    }
+    
+    @media (max-width: 992px) {
+        .content-columns {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .violations-section,
+        .chat-container {
+            height: 50vh;
+        }
+    }
+    
+    .card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-bottom: none;
+    }
+    
+    .card-header h5 {
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .section-divider {
+        height: 3px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 2px;
+        margin: 2rem 0;
+    }
+    
+    /* Message Wrapper Styles */
+    .message-wrapper {
+        margin-bottom: 1.5rem;
+        display: flex;
+    }
+    
+    .user-wrapper {
+        justify-content: flex-end;
+    }
+    
+    .bot-wrapper {
+        justify-content: flex-start;
+    }
+    
+    .message-bubble {
+        max-width: 70%;
+        padding: 1.5rem;
+        border-radius: 15px;
+        position: relative;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border-left: 5px solid transparent;
+        background: white;
+    }
+    
+    .message-bubble:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .user-wrapper .message-bubble {
+        border-left: 5px solid #667eea;
+    }
+    
+    .user-wrapper .message-bubble:hover {
+        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
+    }
+    
+    .bot-wrapper .message-bubble {
+        border-left: 5px solid #17a2b8;
+    }
+    
+    .bot-wrapper .message-bubble:hover {
+        box-shadow: 0 12px 35px rgba(23, 162, 184, 0.15);
+    }
+    
+    .message-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+    
+    .user-wrapper .message-header {
+        border-bottom-color: rgba(102, 126, 234, 0.2);
+    }
+    
+    .bot-wrapper .message-header {
+        border-bottom-color: rgba(23, 162, 184, 0.2);
+    }
+    
+    .message-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        min-width: 45px;
+        transition: all 0.3s ease;
+    }
+    
+    .user-wrapper .message-avatar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .bot-wrapper .message-avatar {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+    }
+    
+    .message-avatar:hover {
+        transform: scale(1.05);
+    }
+    
+    .message-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+    }
+    
+    .message-sender {
+        font-weight: 600;
+        font-size: 1rem;
+        color: #2c3e50;
+    }
+    
+    .user-wrapper .message-sender {
+        color: #667eea;
+    }
+    
+    .bot-wrapper .message-sender {
+        color: #17a2b8;
+    }
+    
+    .message-time {
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+    
+    .message-content {
+        line-height: 1.6;
+        font-size: 1rem;
+        color: #333;
+        font-weight: 400;
+    }
+    
+    .message-content p {
+        margin-bottom: 0.75rem;
+    }
+    
+    .message-content p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .empty-chat {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6c757d;
+    }
+    
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.3;
+    }
+    
+    .empty-chat p {
+        font-size: 1.1rem;
+        margin: 0;
+    }
+    
+    @media (max-width: 768px) {
+        .session-wrapper {
+            padding: 1rem;
+        }
+        
+        .session-header {
+            padding: 1.5rem;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .message {
+            max-width: 95%;
+        }
+        
+        .message-bubble {
+            max-width: 85%;
+        }
+        
+        .chat-container {
+            height: 50vh;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="session-wrapper">
+    <div class="container">
+        <!-- Session Header -->
+        <div class="session-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>
+                    <span class="header-icon">
+                        <i class="fas fa-comments"></i>
+                    </span>
+                    Session Details
+                </h2>
+                <div class="d-flex gap-2">
+                    {% if session.violations.exists %}
+                    <a href="{% url 'download_session_pdf' session.id %}" class="back-btn" title="Download PDF Report">
+                        <i class="fas fa-file-pdf"></i> Download PDF
+                    </a>
+                    {% endif %}
+                    <button type="button" class="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete Session">
+                        <i class="fas fa-trash"></i> Delete Session
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Session Information -->
+        <div class="session-info">
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Factory Name</h6>
+                        <p>{{ session.factory_name|default:"Unknown" }}</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Location</h6>
+                        <p>{{ session.location|default:"Unknown" }}</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Language</h6>
+                        <p>{{ session.language|default:"Unknown" }}</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Gender</h6>
+                        <p>{{ session.gender|default:"Unknown" }}</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-passport"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Nationality</h6>
+                        <p>{{ session.nationality|default:"Unknown" }}</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Case Type</h6>
+                        <p>{% if session.case_type %}{{ session.case_type }}{% else %}Not classified{% endif %}</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Industrial Sector</h6>
+                        <p>{{ session.industrial_sector|default:"Unknown" }}</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Created</h6>
+                        <p>{{ session.created_at|date:"M d, Y H:i" }}</p>
+                    </div>
+                </div>
+                
+                <div class="info-item" style="grid-column: 1 / -1;">
+                    <div class="info-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Buyer Companies</h6>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            {% for company in session.buyer_companies.all %}
+                                <span class="badge bg-primary rounded-pill px-3 py-2">{{ company.name }}</span>
+                            {% empty %}
+                                <span class="text-muted">None identified</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Column Layout for Violations and Chat -->
+        <div class="content-columns">
+            <!-- Policy Violations Section -->
+            <div class="violations-column">
+                {% if session.violations.exists %}
+                <div class="violations-wrapper">
+                    <div class="violations-header">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Policy Violations</h3>
+                    </div>
+                    
+                    <div class="violations-container">
+                        {% for violation in session.violations.all %}
+                        <div class="policy-violation">
+                            <div class="violation-header">
+                                <div class="violation-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div class="violation-title">
+                                    <h5>{{ violation.buyer_company }}</h5>
+                                </div>
+                                <div class="violation-badge">
+                                    Violation Detected
+                                </div>
+                            </div>
+                            
+                            {% if violation.complaint_summary %}
+                            <div class="complaint-summary">
+                                <h6 class="mb-2"><i class="fas fa-exclamation-triangle"></i> Complaint Summary</h6>
+                                <p class="mb-0">{{ violation.complaint_summary }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if violation.get_incidents_list %}
+                            <div class="section-header">
+                                <h6 class="text-warning mb-0">
+                                    <i class="fas fa-list-ul"></i> Reported Incidents 
+                                    <span class="badge bg-warning text-dark">{{ violation.get_incidents_list|length }}</span>
+                                </h6>
+                            </div>
+                            {% for incident in violation.get_incidents_list %}
+                            <div class="incident-item">
+                                <i class="fas fa-dot-circle text-warning me-2"></i>
+                                {{ incident }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            
+                            {% if violation.get_violations_list %}
+                            <div class="section-header mt-3">
+                                <h6 class="text-danger mb-0">
+                                    <i class="fas fa-gavel"></i> Policy Violations 
+                                    <span class="badge bg-danger">{{ violation.get_violations_list|length }}</span>
+                                </h6>
+                            </div>
+                            
+                            {% for policy_violation in violation.get_violations_list %}
+                            <div class="violation-item">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="text-danger mb-1">
+                                        <i class="fas fa-exclamation-circle"></i> {{ policy_violation.policy_category|default:"Policy Violation" }}
+                                    </h6>
+                                    <span class="badge bg-secondary">{{ policy_violation.incident|default:"General Violation" }}</span>
+                                </div>
+                                
+                                <p class="mb-2">{{ policy_violation.violation_description }}</p>
+                                
+                                {% if policy_violation.reference %}
+                                <div class="expand-btn border rounded p-2 mb-2" onclick="toggleReference('ref-detail-{{ forloop.parentloop.counter }}-{{ forloop.counter }}')">
+                                    <i class="fas fa-file-alt text-info me-2"></i>
+                                    <strong>Policy Reference</strong>
+                                    <i class="fas fa-chevron-down float-end"></i>
+                                </div>
+                                
+                                <div id="ref-detail-{{ forloop.parentloop.counter }}-{{ forloop.counter }}" class="collapsible-content">
+                                    <div class="policy-reference">
+                                        <h6 class="text-dark mb-2">
+                                            <i class="fas fa-book"></i> {{ policy_violation.reference.document_name|default:"Policy Document" }}
+                                        </h6>
+                                        <p class="mb-2"><strong>Policy Content:</strong></p>
+                                        <p class="small text-muted">{{ policy_violation.reference.policy_content|truncatechars:300 }}</p>
+                                        
+                                        {% if policy_violation.reference.field_name %}
+                                        <p class="mb-1"><strong>Field:</strong> <em>{{ policy_violation.reference.field_name }}</em></p>
+                                        {% endif %}
+                                        
+                                        {% if policy_violation.reference.reference_info %}
+                                        <p class="mb-2"><strong>Reference:</strong> {{ policy_violation.reference.reference_info }}</p>
+                                        {% endif %}
+                                        
+                                        {% if policy_violation.reference.document_url and policy_violation.reference.document_url != "Not available" %}
+                                        <a href="{{ policy_violation.reference.document_url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-external-link-alt"></i> View Document
+                                        </a>
+                                        {% else %}
+                                        <button class="btn btn-outline-secondary btn-sm" disabled>
+                                            <i class="fas fa-ban"></i> Document Unavailable
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            
+                            {% if not violation.complaint_summary and not violation.get_incidents_list and not violation.get_violations_list %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-info-circle"></i> 
+                                This violation report is in legacy format.
+                                <details class="mt-2">
+                                    <summary class="text-primary" style="cursor: pointer;">View raw report</summary>
+                                    <div class="mt-2 p-2 bg-light rounded">
+                                        <pre class="small">{{ violation.violation_text }}</pre>
+                                    </div>
+                                </details>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% if not forloop.last %}<hr class="section-divider">{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="violations-wrapper">
+                    <div class="violations-header">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Policy Violations</h3>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No policy violations found for this session.
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Conversation History Section -->
+            <div class="conversation-column">
+                <div class="conversation-wrapper">
+                    <div class="conversation-header">
+                        <h3><i class="fas fa-comments"></i> Conversation History</h3>
+                    </div>
+                    
+                    <div class="chat-container">
+                        {% for message in session.messages.all %}
+                        <div class="message-wrapper {% if message.role == 'user' %}user-wrapper{% else %}bot-wrapper{% endif %}">
+                            <div class="message-bubble {% if message.role == 'user' %}user-message{% else %}bot-message{% endif %}">
+                                <div class="message-header">
+                                    <div class="message-avatar">
+                                        {% if message.role == 'user' %}
+                                            <i class="fas fa-user"></i>
+                                        {% else %}
+                                            <i class="fas fa-robot"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="message-info">
+                                        <span class="message-sender">
+                                            {% if message.role == 'user' %}User{% else %}PoBot{% endif %}
+                                        </span>
+                                        <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
+                                    </div>
+                                </div>
+                                <div class="message-content">
+                                    {{ message.content|linebreaks }}
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="empty-chat">
+                            <div class="empty-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <p>No messages in this conversation yet.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Session Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-trash-alt text-danger" style="font-size: 3rem;"></i>
+                </div>
+                <h6 class="text-center mb-3">Are you sure you want to delete this session?</h6>
+                <div class="alert alert-warning">
+                    <strong>Session Details:</strong><br>
+                    <strong>ID:</strong> #{{ session.id }}<br>
+                    <strong>Factory:</strong> {{ session.factory_name|default:"Unknown Factory" }}<br>
+                    <strong>Created:</strong> {{ session.created_at|date:"M d, Y H:i" }}<br>
+                    {% if session.violations.exists %}
+                    <strong>Violations:</strong> {{ session.violations.count }} violation(s)<br>
+                    {% endif %}
+                    <strong>Messages:</strong> {{ session.messages.count }} message(s)
+                </div>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone. All associated data including messages, violations, and buyer companies will be permanently deleted.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <form method="post" action="{% url 'delete_session' session.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Delete Session
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleReference(refId) {
+    const element = document.getElementById(refId);
+    const button = element.previousElementSibling;
+    const icon = button.querySelector('.fa-chevron-down, .fa-chevron-up');
+    
+    if (element.classList.contains('show')) {
+        element.classList.remove('show');
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+    } else {
+        element.classList.add('show');
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+    }
+}
+
+// Add Font Awesome if not already included
+if (!document.querySelector('link[href*="font-awesome"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+    document.head.appendChild(link);
+}
+</script>
+{% endblock %}
